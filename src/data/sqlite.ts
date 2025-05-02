@@ -7,17 +7,27 @@ dotenv.config();
 export default class SqliteApplicationHandler {
 	protected database: DatabaseSync;
 
-	constructor() {
-		this.database = new DatabaseSync(path.resolve(process.cwd(), '/data/application'), {
-			open: true,
-		});
+	constructor(useDefault: boolean) {
+		if (useDefault){
+			this.database = new DatabaseSync(path.resolve(process.cwd(), 'data/application'), {
+				open: true,
+			});
+		} else {
+			this.database = new DatabaseSync(path.resolve(process.cwd(), '/data/application'), {
+				open: true,
+			})
+		}
 	}
 
-	query = (sqlQuery: string, returnValue?: boolean): StatementSync | void => {
-		if (returnValue) {
-			return this.database.prepare(sqlQuery);
-		} else {
-			this.database.exec(sqlQuery);
+	query = (sqlQuery: string, args?: Array<string | number>, returnValue?: boolean): StatementSync | void | undefined => {
+		try{
+			if (returnValue) {
+				return this.database.prepare(sqlQuery);
+			} else {
+				this.database.exec(sqlQuery);
+			}
+		} catch(err){
+			return undefined;
 		}
 	}
 }

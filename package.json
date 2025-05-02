@@ -1,10 +1,11 @@
 {
   "name": "tg-daily-score",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "for alfa purposes only",
   "main": "dist/index.js",
   "scripts": {
     "start": "npx tsx src/index.ts",
+    "temp": "npx tsx src/handlers/response.ts",
     "build": "tsc"
   },
   "dependencies": {
