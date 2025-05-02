@@ -1,15 +1,9 @@
 import TelegramBot from "node-telegram-bot-api";
-import {
-	DEFAULT_ACTION_MAP,
-	DEFAULT_ACTIONS,
-	IEventMap,
-	IResolvedEvent,
-	IResolvedEventHandler,
-	IResolvedEventParams,
-	TDEFAULT_ACTIONS
-} from "../assets/actions";
 import keyboardBuilder from "../assets/keyboards";
 import Events from "./events";
+import {DEFAULT_ACTION_MAP} from "../assets/actions";
+import TActions from "../types/actions.t";
+import TEvents from "../types/events.t";
 
 export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQuery, user: TelegramBot.User, client: TelegramBot) {
 	// TODO: normalize types
@@ -29,11 +23,11 @@ export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQu
 					onResolvedEvent({
 						callbackQuery: callbackResponse,
 						client: client,
-						event: key as keyof TDEFAULT_ACTIONS,
+						event: key as keyof TActions.TDEFAULT_ACTIONS,
 						mapNode: mapNode,
 						user: user
 					})
-						.catch((err) => console.log(err));
+						.catch((err: any) => console.log(err));
 				}
 			}
 			if (mapNode?.next) {
@@ -44,7 +38,8 @@ export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQu
 	responseFounder()
 }
 
-export const onResolvedEvent: IResolvedEvent = async (params: IResolvedEventParams, callback?: (...args: any) => void): Promise<void> => {
+export const onResolvedEvent: TEvents.IResolvedEvent = async (params: TEvents.IResolvedEventParams, callback?: (...args: any) => void): Promise<void> => {
 	let event = params.event;
-	await new Events().ResolvedEventHandler[event].call(params);
+	// @ts-ignore
+	await new Events().ResolvedEventHandler[event].call(this, params);
 }

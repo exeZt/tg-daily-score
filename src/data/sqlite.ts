@@ -26,7 +26,7 @@ export default class SqliteApplicationHandler {
 			} else {
 				this.database.exec(sqlQuery);
 			}
-		} catch(err){
+		} catch(err) {
 			return undefined;
 		}
 	}

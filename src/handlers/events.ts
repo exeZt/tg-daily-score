@@ -1,96 +1,111 @@
-import type {IDefaultActionEvents, IDefaultActionEventsNames, IEvents, IResolvedEventHandler} from "../assets/actions";
-import TelegramBot from "node-telegram-bot-api";
-import QuerySchemes from "../data/query_schemes";
-import {ResolvedEventHandler} from "./response";
+import {ShemeBase} from "../data/query_schemes";
+import SqliteApplicationHandler from "../data/sqlite";
+import TEvents from "../types/events.t";
+import DefaultDataHandler from "../data/default";
 
-export default class Events implements IEvents {
-	ResolvedEventHandler: IResolvedEventHandler = {
-		BC(args: any): Promise<void> {
+export default class Events implements TEvents.IEvents {
+	ResolvedEventHandler: TEvents.IResolvedEventHandler = {
+		async BC(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		CASHBACK(args: any): Promise<void> {
+		async CASHBACK(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		CDC(args: any): Promise<void> {
+		async CDC(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		CDOC(args: any): Promise<void> {
+		async CDOC(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		COMBO(args: any): Promise<void> {
+		async COMBO(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		EQI_INSTALL(args: any): Promise<void> {
+		async EQI_INSTALL(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		EQI_SERVICE(args: any): Promise<void> {
+		async EQI_SERVICE(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		EQ_3_INSTALL(args: any): Promise<void> {
+		async EQ_3_INSTALL(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		EQ_INSTALL(args: any): Promise<void> {
+		async EQ_INSTALL(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		EQ_SERVICE(args: any): Promise<void> {
+		async EQ_SERVICE(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		EQ_UNINSTALL(args: any): Promise<void> {
+		async EQ_UNINSTALL(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		FNS(args: any): Promise<void> {
+		async FNS(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		IACQ(args: any): Promise<void> {
+		async IACQ(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		INVEST(args: any): Promise<void> {
+		async INVEST(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		RISK(args: any): Promise<void> {
+		async RISK(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		RKO(args: any): Promise<void> {
+		async RKO(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		SELFIE_CC(args: any): Promise<void> {
+		async SELFIE_CC(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		SELFIE_DC(args: any): Promise<void> {
+		async SELFIE_DC(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		SELFIE_DC_N2B(args: any): Promise<void> {
+		async SELFIE_DC_N2B(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		TRADEACQ(args: any): Promise<void> {
+		async TRADEACQ(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		ZHKU(args: any): Promise<void> {
+		async ZHKU(args: TEvents.IResolvedEventParams): Promise<void> {
 			return Promise.resolve(undefined);
 		},
 
-		ZPC(args: any): Promise<void> {
-			return Promise.resolve(undefined);
+		async ZPC(args: TEvents.IResolvedEventParams): Promise<void> {
+			let data = new SqliteApplicationHandler(true)
+			let transaction_1 = data.query(ShemeBase.CHECK_EXISTS_ROW.SQL, [
+				new DefaultDataHandler().getDate(),
+				args.user.username!
+			], true);
+
+			if (!transaction_1) {
+				data.query(ShemeBase.ADD_RECORD.SQL, [
+						new DefaultDataHandler().getDate(),
+						args.event,
+						args.event,
+						1,
+						args.user.username!
+					], false);
+
+			}
 		}
 	}
 }

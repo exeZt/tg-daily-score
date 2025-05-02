@@ -1,19 +1,17 @@
 import TelegramBot from "node-telegram-bot-api";
 import type {CallbackQuery} from "node-telegram-bot-api";
 import {TTelegramHandler} from "../types/telegram.t";
-import ITelegramHandlerOptions = TTelegramHandler.ITelegramHandlerOptions;
 import {MainApplicationKeyboard} from "../assets/keyboards";
 import dotenv from "dotenv";
-import ITelegramHandler = TTelegramHandler.ITelegramHandler;
 import ResponseHandler from "./response";
 
 dotenv.config();
 
-export default class TelegramHandler implements ITelegramHandler {
+export default class TelegramHandler implements TTelegramHandler.ITelegramHandler {
 	protected client!: TelegramBot;
 	protected responseParams!: TelegramBot.SendMessageOptions;
 
-	constructor(opts?: ITelegramHandlerOptions) {
+	constructor(opts?: TTelegramHandler.ITelegramHandlerOptions) {
 		this.client =
 			opts?.client ?? new TelegramBot(process.env.TELEGRAM_TOKEN!, {
 				polling: true
