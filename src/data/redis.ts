@@ -1,0 +1,37 @@
+import { createClient, RedisClientType } from "redis";
+import {IRedisApplicationHandler} from "../types/redis.t";
+
+export default class RedisApplicationHandler implements IRedisApplicationHandler {
+	private defaultServer = '127.0.0.1:6379';
+	protected client: RedisClientType;
+
+	constructor() {
+		this.client = createClient({
+			// url: process.env.REDIS_URL ?? this.defaultServer,
+		});
+		this.client.on('error', (err) => {
+			console.error(err);
+		});
+	}
+
+	useStorage = async (key: string, val?: string, callback?: (value: string | null) => void): Promise<void> => {
+		await this.client.connect();
+		if (!val || val === '')
+			callback?.(await this.client.get(key)!)
+		else
+			await this.client.set(key, val);
+
+		await this.client.close();
+	}
+
+	updateValue = async (key: string, val: string): Promise<void> => {
+		await this.client.connect();
+		let prev: string | null = await this.client.get(key)
+		if (prev === null) {
+			await this.client.set(key, val);
+		} else {
+			await this.client.set(key, `${prev}|${val}`);
+		}
+		await this.client.close();
+	}
+}
