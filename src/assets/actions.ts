@@ -25,6 +25,7 @@ export const DEFAULT_ACTIONS: TActions.TDEFAULT_ACTIONS = {
 	RISK: 0x0000B4,
 	BC: 0x0000B5,
 	CDC: 0x0000B6,
+	$GO_BACK: 0xFFAABB
 }
 
 export const DEFAULT_ACTION_MAP: TActions.IActionApplicationMap = {

@@ -1,5 +1,5 @@
-import TelegramBot from "node-telegram-bot-api";
-import keyboardBuilder from "../assets/keyboards";
+import TelegramBot, {InlineKeyboardMarkup} from "node-telegram-bot-api";
+import keyboardBuilder, {MainApplicationKeyboard} from "../assets/keyboards";
 import Events from "./events";
 import {DEFAULT_ACTION_MAP} from "../assets/actions";
 import TActions from "../types/actions.t";
@@ -7,16 +7,29 @@ import TEvents from "../types/events.t";
 
 export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQuery, user: TelegramBot.User, client: TelegramBot) {
 	// TODO: normalize types
-	const responseFounder = (current?: object) => {
+	const responseFounder = (current?: TActions.IActionApplicationMapNode, prev?: TActions.IActionApplicationMapNode) => {
 		Object.entries(current ?? DEFAULT_ACTION_MAP).forEach(([key, mapNode]) => {
 			if (mapNode.code.toString() === callbackResponse.data!) {
 				if (mapNode?.next) {
-					keyboardBuilder(mapNode.next!, (keyboard) => {
+					keyboardBuilder(mapNode.next!, {
+						buttons: {
+							add_exit: true
+						}
+					}, (keyboard) => {
 						console.log(keyboard);
 						client.sendMessage(user.id, `Crosses:`, {
 							reply_markup: keyboard
 						})
 							.catch((err) => console.log(err));
+					})
+						.catch((err) => console.log(err));
+					onResolvedEvent({
+						callbackQuery: callbackResponse,
+						client: client,
+						event: key as keyof TActions.TDEFAULT_ACTIONS,
+						mapNode: mapNode,
+						oldNode: prev,
+						user: user
 					})
 						.catch((err) => console.log(err));
 				} else {
@@ -25,17 +38,24 @@ export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQu
 						client: client,
 						event: key as keyof TActions.TDEFAULT_ACTIONS,
 						mapNode: mapNode,
+						oldNode: prev,
 						user: user
 					})
 						.catch((err: any) => console.log(err));
 				}
 			}
 			if (mapNode?.next) {
-				responseFounder(mapNode?.next!);
+				responseFounder(mapNode?.next!, mapNode);
 			}
 		})
 	}
 	responseFounder()
+}
+
+export const goToMainMenu = async (args: TEvents.IResolvedEventParams): Promise<void> => {
+	await args.client.sendMessage(args.user.id, `Какую встречу вы завершили?`, {
+		reply_markup: MainApplicationKeyboard
+	});
 }
 
 export const onResolvedEvent: TEvents.IResolvedEvent = async (params: TEvents.IResolvedEventParams, callback?: (...args: any) => void): Promise<void> => {

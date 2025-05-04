@@ -1,4 +1,4 @@
-import {DatabaseSync, StatementSync} from "node:sqlite";
+import {DatabaseSync, SQLOutputValue } from "node:sqlite";
 import path from "node:path";
 import dotenv from "dotenv";
 
@@ -19,15 +19,28 @@ export default class SqliteApplicationHandler {
 		}
 	}
 
-	query = (sqlQuery: string, args?: Array<string | number>, returnValue?: boolean): StatementSync | void | undefined => {
-		try{
-			if (returnValue) {
-				return this.database.prepare(sqlQuery);
+	query = (sqlQuery: string, args?: Array<string>): Record<string, SQLOutputValue>[] | undefined => {
+		try {
+			if ((args && args.length > 0)) {
+				let parsed: string = this.prepareSqlRequest(sqlQuery, args!);
+				return this.database.prepare(parsed).all();
 			} else {
-				this.database.exec(sqlQuery);
+				console.log(this.database.prepare(sqlQuery).all().length)
+				return this.database.prepare(sqlQuery).all();
 			}
 		} catch(err) {
+			console.log(err);
 			return undefined;
 		}
+	}
+
+	prepareSqlRequest = (sqlString: string, params: Array<string>): string => {
+		let q: string = '';
+		let init: string[] = sqlString.split('?');
+		for (let i: number = 0; i < init.length; i++) {
+			q += init[i];
+			q += params[i] ?? '';
+		}
+		return q;
 	}
 }

@@ -25,6 +25,7 @@ namespace TActions {
 		RISK: number,
 		BC: number,
 		CDC: number,
+		$GO_BACK: number
 	}
 
 	export type IDefaultActionEvent<T = IDefaultActionEventsNames, Y = any, U = any> =

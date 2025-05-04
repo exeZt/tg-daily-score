@@ -1,13 +1,12 @@
 "use strict";
 
 import dotenv from 'dotenv';
-import TelegramBot from "node-telegram-bot-api";
-import type {Message} from "node-telegram-bot-api";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import path from "node:path";
 import TelegramHandler from "./handlers/telegram";
+import AppServer from "./srv/app_server";
 
 dotenv.config();
 

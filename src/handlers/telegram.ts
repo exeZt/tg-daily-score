@@ -22,7 +22,6 @@ export default class TelegramHandler implements TTelegramHandler.ITelegramHandle
 
 	run(): void {
 		this.client.on('text', (msg) => {
-			console.log(msg)
 			if (msg.text === '/start') {
 				this.client.sendMessage(msg.from?.id!, `Какую встречу вы завершили?`,
 				this.responseParams ?? {
@@ -37,9 +36,7 @@ export default class TelegramHandler implements TTelegramHandler.ITelegramHandle
 		});
 
 		this.client.on('callback_query', (cb: CallbackQuery) => {
-			// cb.from.id
 			if (cb.data?.toString()) {
-				console.log(cb.data?.toString());
 				ResponseHandler(cb, cb.from, this.client);
 			}
 		});

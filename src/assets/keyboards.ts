@@ -1,21 +1,47 @@
 import TelegramBot, {InlineKeyboardButton, InlineKeyboardMarkup} from "node-telegram-bot-api";
 import {
 	DEFAULT_ACTIONS,
-	IActionApplicationMap,
-	IActionApplicationMapKeyboard,
-	IActionApplicationMapKeyboardBuilder, IActionApplicationMapNode
 } from "./actions";
+import TActions from "../types/actions.t";
+import IActionApplicationMap = TActions.IActionApplicationMap;
+import IActionApplicationMapNode = TActions.IActionApplicationMapNode;
+import IActionApplicationMapKeyboard = TActions.IActionApplicationMapKeyboard;
+
+interface IKeyboardBuilderOptionsButtons {
+	add_exit?: boolean;
+	set_inactive?: Array<string>;
+}
+
+interface IKeyboardBuilderOptions {
+	buttons?: IKeyboardBuilderOptionsButtons
+}
 
 //TODO: REVIEW type in map -> v [str, ????] can't be undefined!
-export default async function keyboardBuilder(entryPoint: IActionApplicationMap, callback?: (kb: (IActionApplicationMapKeyboard["keyboard"] | TelegramBot.InlineKeyboardMarkup)) => void): Promise<void> {
-	const btn: InlineKeyboardButton[][] = Object.entries(entryPoint!)
-		.map((v: [string, (IActionApplicationMapNode | null)]): InlineKeyboardButton[] => [{
-			text: v[0],
-			callback_data: (v[1]?.code!).toString(),
-	}]);
-
+export default async function keyboardBuilder(entryPoint: IActionApplicationMap, options?: IKeyboardBuilderOptions, callback?: (kb: (IActionApplicationMapKeyboard["keyboard"] | TelegramBot.InlineKeyboardMarkup)) => void): Promise<void> {
+	let btn: InlineKeyboardButton[][];
+	if (!options) {
+		btn = Object.entries(entryPoint!)
+			.map((v: [string, (IActionApplicationMapNode | null)]): InlineKeyboardButton[] => [{
+				text: v[0],
+				callback_data: (v[1]?.code!).toString(),
+			}]);
+	} else {
+		btn = Object.entries(entryPoint!)
+			.map((v: [string, (IActionApplicationMapNode | null)]): InlineKeyboardButton[] => {
+				return [{
+					text: options.buttons?.set_inactive?.includes(v[0], 0) ? `${v[0]} [-]`: `${v[0]} [+]`,
+					callback_data: options.buttons?.set_inactive?.includes(v[0], 0) ? (~v[1]?.code!).toString() : (v[1]?.code)?.toString(),
+				}];
+			});
+		if (options.buttons?.add_exit) {
+			btn.push([{
+				text: `Back`,
+				callback_data: (DEFAULT_ACTIONS.$GO_BACK).toString()
+			}])
+		}
+	}
 	callback?.({
-	  inline_keyboard: await btn
+		inline_keyboard: await btn
 	})
 }
 
@@ -86,3 +112,15 @@ export const RkoCrossProductKeyboard: InlineKeyboardMarkup = {
 		],
 	]
 }
+	//.backup
+// export default async function keyboardBuilder(entryPoint: IActionApplicationMap, callback?: (kb: (IActionApplicationMapKeyboard["keyboard"] | TelegramBot.InlineKeyboardMarkup)) => void): Promise<void> {
+// 	const btn: InlineKeyboardButton[][] = Object.entries(entryPoint!)
+// 		.map((v: [string, (IActionApplicationMapNode | null)]): InlineKeyboardButton[] => [{
+// 			text: v[0],
+// 			callback_data: (v[1]?.code!).toString(),
+// 		}]);
+//
+// 	callback?.({
+// 		inline_keyboard: await btn
+// 	})
+// }
