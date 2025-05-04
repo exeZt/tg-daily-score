@@ -24,13 +24,22 @@ export default class RedisApplicationHandler implements IRedisApplicationHandler
 		await this.client.close();
 	}
 
-	updateValue = async (key: string, val: string): Promise<void> => {
+	updateValue = async (key: string, val: string, remove?: boolean): Promise<void> => {
 		await this.client.connect();
-		let prev: string | null = await this.client.get(key)
-		if (prev === null) {
-			await this.client.set(key, val);
+		if (!remove){
+			let prev: string | null = await this.client.get(key);
+			if (prev === null) {
+				await this.client.set(key, val);
+			} else {
+				await this.client.set(key, `${prev}|${val}`);
+			}
 		} else {
-			await this.client.set(key, `${prev}|${val}`);
+			let prev: string | null = await this.client.get(key);
+			if (prev === null){
+				// do nothing
+			} else {
+				await this.client.set(key, prev.replace(val, ''));
+			}
 		}
 		await this.client.close();
 	}

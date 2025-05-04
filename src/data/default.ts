@@ -4,7 +4,6 @@ import TEvents from "../types/events.t";
 import {ShemeBase} from "./query_schemes";
 import TelegramBot, {InlineKeyboardMarkup} from "node-telegram-bot-api";
 import keyboardBuilder from "../assets/keyboards";
-import CustomTelegramHooks from "../lib/custom_telegram_hooks";
 import RedisApplicationHandler from "./redis";
 
 export default class DefaultDataHandler {
@@ -40,6 +39,40 @@ export default class DefaultDataHandler {
 	createUserRecord = (user: TelegramBot.User) => {
 		let currentDatabaseName = `daily-${this.getDate()}`;
 		DefaultDataHandler.handler.query(`INSERT INTO \`${currentDatabaseName}\` (\`telegram\`) VALUES ('${user.username!}')`, []);
+	}
+
+	removeDataBaseRecord = (params: TEvents.IResolvedEventParams) => {
+		let currentDatabaseName = `daily-${this.getDate()}`;
+		this.checkDatabaseIsExists();
+		if (this.checkUserRowIsExists(params.user)) {
+			// What the fuck?
+		}
+		DefaultDataHandler.handler.query(ShemeBase.REMOVE_RECORD.SQL, [
+			currentDatabaseName,
+			params.event,
+			params.event,
+			'1',
+			params.user.username!,
+		]);
+
+		new RedisApplicationHandler().updateValue(params.callbackQuery.message?.message_id.toString()!, params.event, true);
+		new RedisApplicationHandler().useStorage(params.callbackQuery.message?.message_id.toString()!, '', (v) => {
+			if (typeof params.oldNode !== 'undefined') {
+				let activeArray: string[] = (v?.split('|') ?? []);
+				keyboardBuilder(params.oldNode!.next!, {
+					buttons: {
+						add_exit: true,
+						set_inactive: activeArray
+					}
+				}, kb => {
+					params.client.editMessageText('Cross', {
+						message_id: params.callbackQuery.message?.message_id,
+						chat_id: params.user.id,
+						reply_markup: kb as InlineKeyboardMarkup
+					})
+				})
+			}
+		});
 	}
 
 	addDataBaseRecord = (params: TEvents.IResolvedEventParams) => {

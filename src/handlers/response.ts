@@ -1,14 +1,15 @@
 import TelegramBot, {InlineKeyboardMarkup} from "node-telegram-bot-api";
 import keyboardBuilder, {MainApplicationKeyboard} from "../assets/keyboards";
 import Events from "./events";
-import {DEFAULT_ACTION_MAP} from "../assets/actions";
+import {DEFAULT_ACTION_MAP, DEFAULT_INVERTED_ACTION_MAP} from "../assets/actions";
 import TActions from "../types/actions.t";
 import TEvents from "../types/events.t";
 
 export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQuery, user: TelegramBot.User, client: TelegramBot) {
 	// TODO: normalize types
 	const responseFounder = (current?: TActions.IActionApplicationMapNode, prev?: TActions.IActionApplicationMapNode) => {
-		Object.entries(current ?? DEFAULT_ACTION_MAP).forEach(([key, mapNode]) => {
+		let data: TActions.IActionApplicationMapNode | (TActions.IActionApplicationMap & TActions.IInvertedApplicationActionMap<TActions.TDEFAULT_ACTIONS>) = current ?? Object.assign(DEFAULT_ACTION_MAP, DEFAULT_INVERTED_ACTION_MAP);
+		Object.entries(data).forEach(([key, mapNode]) => {
 			if (mapNode.code.toString() === callbackResponse.data!) {
 				if (mapNode?.next) {
 					keyboardBuilder(mapNode.next!, {

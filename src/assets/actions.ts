@@ -96,3 +96,75 @@ export const DEFAULT_ACTION_MAP: TActions.IActionApplicationMap = {
 		data: 350
 	},
 }
+
+export const DEFAULT_INVERTED_ACTION_MAP: TActions.IInvertedApplicationActionMap = {
+	INVERTED_$GO_BACK: {
+		code: ~0xFFAAFF
+	},
+	INVERTED_BC: {
+		code: 0x000001
+	},
+	INVERTED_CASHBACK: {
+		code: 0x0000A3
+	},
+	INVERTED_CDC: {
+		code: 0x000001
+	},
+	INVERTED_CDOC: {
+		code: ~0x000003
+	},
+	INVERTED_COMBO: {
+		code: ~0x0000A1
+	},
+	INVERTED_EQI_INSTALL: {
+		code: ~0x000007
+	},
+	INVERTED_EQI_SERVICE: {
+		code: ~0x000008
+	},
+	INVERTED_EQ_3_INSTALL: {
+		code: ~0x000009
+	},
+	INVERTED_EQ_INSTALL: {
+		code: ~0x000004
+	},
+	INVERTED_EQ_SERVICE: {
+		code: ~0x000005
+	},
+	INVERTED_EQ_UNINSTALL: {
+		code: ~0x000006
+	},
+	INVERTED_FNS: {
+		code: ~0x0000B1
+	},
+	INVERTED_IACQ: {
+		code: ~0x0000B3
+	},
+	INVERTED_INVEST: {
+		code: ~0x0000A2
+	},
+	INVERTED_RISK: {
+		code: ~0x0000B4
+	},
+	INVERTED_RKO: {
+		code: ~0x000002
+	},
+	INVERTED_SELFIE_CC: {
+		code: ~0x00000B
+	},
+	INVERTED_SELFIE_DC: {
+		code: ~0x00000A
+	},
+	INVERTED_SELFIE_DC_N2B: {
+		code: ~0x00000C
+	},
+	INVERTED_TRADEACQ: {
+		code: ~0x0000B2
+	},
+	INVERTED_ZHKU: {
+		code: ~0x0000A4
+	},
+	INVERTED_ZPC: {
+		code: ~0x000001
+	}
+}

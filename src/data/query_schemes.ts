@@ -20,6 +20,10 @@ export const ShemeBase: IShemeBase = {
 		SQL: "UPDATE `?` SET `?` = `?` + ? WHERE `telegram` = '?';",
 		ARGS_COUNT: 5
 	},
+	REMOVE_RECORD: {
+		SQL: "UPDATE `?` SET `?` = `?` - ? WHERE `telegram`='?';",
+		ARGS_COUNT: 5
+	},
 	CHECK_EXISTS_ROW: {
 		SQL: "SELECT * FROM `?` WHERE telegram = '?' ISNULL",
 		ARGS_COUNT: 2

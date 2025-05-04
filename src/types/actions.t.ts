@@ -1,6 +1,7 @@
 import TelegramBot, {User} from "node-telegram-bot-api";
 import TEvents from "./events.t";
 
+// TODO: change types to <T> form
 namespace TActions {
 	export type TDEFAULT_ACTIONS = {
 		ZPC: number,
@@ -31,8 +32,7 @@ namespace TActions {
 	export type IDefaultActionEvent<T = IDefaultActionEventsNames, Y = any, U = any> =
 		(ev: T, user: User, args?: (Array<Y> | ArrayLike<Y>) | Y, callback?: (...args: any | U) => void) => Promise<void>;
 
-	export type IDefaultActionEventsNames =
-		keyof TDEFAULT_ACTIONS
+	export type IDefaultActionEventsNames = keyof TDEFAULT_ACTIONS;
 
 	export type IDefaultActionEvents = {
 		resolve: IDefaultActionEvent<IDefaultActionEventsNames>
@@ -55,6 +55,10 @@ namespace TActions {
 
 	export interface IActionApplicationMap {
 		[key: string]: IActionApplicationMapNode | null
+	}
+
+	export type IInvertedApplicationActionMap<T = TDEFAULT_ACTIONS> = {
+		[Key in keyof T as `INVERTED_${Key}`]: IActionApplicationMapNode | null;
 	}
 }
 export default TActions;

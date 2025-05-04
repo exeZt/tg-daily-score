@@ -16,6 +16,7 @@ export namespace TTelegramHandler {
 
 	export interface ITelegramHandlerOptions<Y = TelegramBot.TelegramEvents> {
 		client?: TelegramBot;
+		message_opts?: TelegramBot.SendMessageOptions;
 		log?:
 			"info" |
 			"warn" |

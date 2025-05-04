@@ -17,7 +17,9 @@ export default class TelegramHandler implements TTelegramHandler.ITelegramHandle
 				polling: true
 			});
 		this.responseParams
-			= (opts?.events?.text?.responseParams!);
+			= (opts?.events?.text?.responseParams! ?? opts?.message_opts ?? {
+				parse_mode: "HTML"
+		});
 	}
 
 	run(): void {

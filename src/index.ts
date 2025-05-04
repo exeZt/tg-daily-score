@@ -30,7 +30,7 @@ app.get('/', (req,res): void => {
 		.sendFile(path.resolve(process.cwd(), `/public/index.html`));
 });
 
-app.listen(process.env.APP_PORT, (error: Error | undefined): void => {
+app.listen(process.env.APP_PORT ?? 3000, (error: Error | undefined): void => {
 	console.log(`Listening on ${process.env.APP_PORT}`);
 	if (error)
 		console.error(error);

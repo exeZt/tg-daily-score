@@ -1,5 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 import TActions from "./actions.t";
+import bodyParser from "body-parser";
 
 namespace TEvents {
 	// TODO: EDIT event declaration
@@ -25,10 +26,14 @@ namespace TEvents {
 		sqlQueryParams?: (string | number)[]; // As SQLEventSchemeName
 	}
 
-	export interface IResolvedEventHandler extends IEventMap {}
+	export interface IResolvedEventHandler extends IEventInvertedMap, IEventMap {}
 
 	export type IEventMap = {
-		[EventName in keyof TActions.TDEFAULT_ACTIONS]: (args: IResolvedEventParams) => Promise<void>
+		[EventName in keyof TActions.TDEFAULT_ACTIONS]: (args: IResolvedEventParams) => Promise<void>;
+	}
+
+	export type IEventInvertedMap = {
+		[EventName in keyof TActions.IInvertedApplicationActionMap]: (args: IResolvedEventParams) => Promise<void>;
 	}
 
 	export interface IEvents {}

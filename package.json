@@ -1,11 +1,12 @@
 {
   "name": "tg-daily-score",
-  "version": "0.0.1",
+  "version": "0.0.2-b-raw",
   "description": "for alfa purposes only",
   "main": "dist/index.js",
   "scripts": {
     "start": "npx tsx src/index.ts",
     "temp": "npx tsx src/data/default.ts",
+    "preinstall": "echo 'hello';",
     "build": "tsc"
   },
   "dependencies": {
@@ -18,7 +19,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.3",
     "@types/node-telegram-bot-api": "^0.64.8",
     "@types/redis": "^4.0.10",
     "redis": "^5.0.0",
