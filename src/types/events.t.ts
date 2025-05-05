@@ -1,6 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
 import TActions from "./actions.t";
-import bodyParser from "body-parser";
 
 namespace TEvents {
 	// TODO: EDIT event declaration
