@@ -1,15 +1,37 @@
 import SqliteApplicationHandler from "./sqlite";
 import {DEFAULT_ACTIONS} from "../assets/actions";
 import TEvents from "../types/events.t";
-import {ShemeBase} from "./query_schemes";
-import TelegramBot, {InlineKeyboardMarkup} from "node-telegram-bot-api";
-import keyboardBuilder from "../assets/keyboards";
-import RedisApplicationHandler from "./redis";
+import ShemeBase from "../assets/sql-schemes";
+import TelegramBot from "node-telegram-bot-api";
+import TelegramVisualEffects from "../lib/telegram.vs";
+import {SQLOutputValue} from "node:sqlite";
 
-export default class DefaultDataHandler {
-	protected static handler: SqliteApplicationHandler = new SqliteApplicationHandler(true);
+class ApplicationDataHandler {
+	getCurrentData = async (date: string, callback: (data: Array<any> | Record<string, SQLOutputValue>[]) => void): Promise<void> => {
+		let currentDatabaseName = `daily-${date}`;
+		let responseData: Record<string, SQLOutputValue>[] | undefined = DefaultDataHandler.handler.query(ShemeBase.GET_CURRENT_DATE.SQL, [
+			currentDatabaseName
+		]);
+		callback(responseData === undefined ? [] : responseData);
+	}
+
+	getAllTables = () => {//@ts-ignore
+		let final: Record<string, SQLOutputValue>[] = [];
+		let array: Record<string, SQLOutputValue>[] =	DefaultDataHandler.handler.query(ShemeBase.GET_TABLE_NAMES.SQL, [])!;
+		array.map((v) => {
+			// @ts-ignore
+			v = { name: v?.name?.replace('daily-', '') };
+			final.push(v as Record<string, SQLOutputValue>);
+		})
+		return final;
+	}
+}
+
+export default class DefaultDataHandler extends ApplicationDataHandler {
+	public static readonly handler: SqliteApplicationHandler = new SqliteApplicationHandler(true);
 
 	constructor() {
+		super();
 		this.createDataBase();
 	}
 
@@ -43,36 +65,18 @@ export default class DefaultDataHandler {
 
 	removeDataBaseRecord = (params: TEvents.IResolvedEventParams) => {
 		let currentDatabaseName = `daily-${this.getDate()}`;
+		console.log(currentDatabaseName)
+		let event: string = (params.event as string).replace('INVERTED_', '')
 		this.checkDatabaseIsExists();
-		if (this.checkUserRowIsExists(params.user)) {
-			// What the fuck?
-		}
 		DefaultDataHandler.handler.query(ShemeBase.REMOVE_RECORD.SQL, [
 			currentDatabaseName,
-			params.event,
-			params.event,
+			event,
+			event,
 			'1',
 			params.user.username!,
 		]);
 
-		new RedisApplicationHandler().updateValue(params.callbackQuery.message?.message_id.toString()!, params.event, true);
-		new RedisApplicationHandler().useStorage(params.callbackQuery.message?.message_id.toString()!, '', (v) => {
-			if (typeof params.oldNode !== 'undefined') {
-				let activeArray: string[] = (v?.split('|') ?? []);
-				keyboardBuilder(params.oldNode!.next!, {
-					buttons: {
-						add_exit: true,
-						set_inactive: activeArray
-					}
-				}, kb => {
-					params.client.editMessageText('Cross', {
-						message_id: params.callbackQuery.message?.message_id,
-						chat_id: params.user.id,
-						reply_markup: kb as InlineKeyboardMarkup
-					})
-				})
-			}
-		});
+		new TelegramVisualEffects().onRecordRemoved(params, event);
 	}
 
 	addDataBaseRecord = (params: TEvents.IResolvedEventParams) => {
@@ -81,36 +85,14 @@ export default class DefaultDataHandler {
 		if (this.checkUserRowIsExists(params.user)) {
 			this.createUserRecord(params.user);
 		}
-		console.log(params.oldNode)
 		DefaultDataHandler.handler.query(ShemeBase.ADD_RECORD.SQL, [
 			currentDatabaseName,
-			params.event,
-			params.event,
+			params.event as string,
+			params.event as string,
 			'1',
 			params.user.username!,
 		]);
-
-		new RedisApplicationHandler().updateValue(params.callbackQuery.message?.message_id.toString()!, params.event);
-		new RedisApplicationHandler().useStorage(params.callbackQuery.message?.message_id.toString()!, '', (v) => {
-			//TODO: Create external function for this block of code
-			if (typeof params.oldNode !== "undefined") {
-				let inactiveArray: string[] = (v?.split('|') ?? []);
-				inactiveArray.push(params.event)
-				keyboardBuilder(params.oldNode!.next!, {
-					buttons: {
-						add_exit: true,
-						set_inactive: inactiveArray
-					}
-				}, (kb) => {
-					params.client.editMessageText(`Cross`, {
-						message_id:	params.callbackQuery.message?.message_id,
-						chat_id: params.user.id,
-						reply_markup: kb as InlineKeyboardMarkup
-					});
-				})
-					.catch((err) => console.log(err));
-			}
-		});
+		new TelegramVisualEffects().onRecordAdded(params);
 	};
 
 	// TODO: add movement for UTC time

@@ -1,14 +1,11 @@
 import { createClient, RedisClientType } from "redis";
-import {IRedisApplicationHandler} from "../types/redis.t";
+import TRedis from "../types/redis.t";
 
-export default class RedisApplicationHandler implements IRedisApplicationHandler {
-	private defaultServer = '127.0.0.1:6379';
+export default class RedisApplicationHandler implements TRedis.IRedisApplicationHandler {
 	protected client: RedisClientType;
 
 	constructor() {
-		this.client = createClient({
-			// url: process.env.REDIS_URL ?? this.defaultServer,
-		});
+		this.client = createClient();
 		this.client.on('error', (err) => {
 			console.error(err);
 		});
@@ -35,8 +32,8 @@ export default class RedisApplicationHandler implements IRedisApplicationHandler
 			}
 		} else {
 			let prev: string | null = await this.client.get(key);
-			if (prev === null){
-				// do nothing
+			if (prev === null) {
+
 			} else {
 				await this.client.set(key, prev.replace(val, ''));
 			}

@@ -1,41 +1,36 @@
 import TelegramBot from "node-telegram-bot-api";
-import TActions from "./actions.t";
 
 namespace TEvents {
-	// TODO: EDIT event declaration
 	export type IResolvedEvent =
 		(params: {
 			callbackQuery: TelegramBot.CallbackQuery;
-			client: TelegramBot;
-			event: "$GO_BACK" | "ZPC" | "RKO" | "CDOC" | "EQ_INSTALL" |
-				"EQ_SERVICE" | "EQ_UNINSTALL" | "EQI_INSTALL" |
-				"EQI_SERVICE" | "EQ_3_INSTALL" | "SELFIE_DC" | "SELFIE_CC" | "SELFIE_DC_N2B" | "COMBO" | "INVEST" | "CASHBACK" | "ZHKU" | "FNS" | "TRADEACQ" | "IACQ" | "RISK" | "BC" | "CDC";
-			mapNode: any;
-			oldNode?: TActions.IActionApplicationMapNode;
+			client: TelegramBot;			// @ts-ignore
+			event: (keyof TDEFAULT_ACTIONS & keyof IInvertedApplicationActionMap);
+			mapNode: any;			// @ts-ignore
+			oldNode?: IActionApplicationMapNode;
 			user: TelegramBot.User
 		}, callback?: (...args: any[]) => void) => Promise<void>
 
-	export interface IResolvedEventParams {
-		event: keyof TActions.TDEFAULT_ACTIONS;
-		mapNode: TActions.IActionApplicationMapNode;
+	export interface IResolvedEventParams {			// @ts-ignore
+		event: (keyof TDEFAULT_ACTIONS & keyof IInvertedApplicationActionMap);			// @ts-ignore
+		mapNode: IActionApplicationMapNode;
 		user: TelegramBot.User;
-		client: TelegramBot;
-		oldNode?: TActions.IActionApplicationMapNode;
+		client: TelegramBot;			// @ts-ignore
+		oldNode?: IActionApplicationMapNode;
 		callbackQuery: TelegramBot.CallbackQuery;
 		sqlQueryParams?: (string | number)[]; // As SQLEventSchemeName
 	}
 
 	export interface IResolvedEventHandler extends IEventInvertedMap, IEventMap {}
 
-	export type IEventMap = {
-		[EventName in keyof TActions.TDEFAULT_ACTIONS]: (args: IResolvedEventParams) => Promise<void>;
+	export type IEventMap = {			// @ts-ignore
+		[EventName in keyof TDEFAULT_ACTIONS]: (args: IResolvedEventParams) => Promise<void>;
 	}
 
-	export type IEventInvertedMap = {
-		[EventName in keyof TActions.IInvertedApplicationActionMap]: (args: IResolvedEventParams) => Promise<void>;
+	export type IEventInvertedMap = {			// @ts-ignore
+		[EventName in keyof IInvertedApplicationActionMap]: (args: IResolvedEventParams) => Promise<void>;
 	}
 
 	export interface IEvents {}
 }
-
 export default TEvents;

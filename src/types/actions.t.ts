@@ -1,5 +1,4 @@
 import TelegramBot, {User} from "node-telegram-bot-api";
-import TEvents from "./events.t";
 
 // TODO: change types to <T> form
 namespace TActions {
@@ -40,8 +39,9 @@ namespace TActions {
 
 	export interface IActionApplicationMapNode {
 		readonly code: string | number;
-		data?: any;
-		response?: TEvents.IResolvedEvent;
+		name?: string;
+		data?: any;			// @ts-ignore
+		response?: IResolvedEvent;
 		next?: IActionApplicationMap & IActionApplicationMapKeyboard
 	}
 
@@ -49,15 +49,11 @@ namespace TActions {
 		keyboard?: TelegramBot.InlineKeyboardMarkup | TelegramBot.ReplyKeyboardMarkup;
 	}
 
-	export type IActionApplicationMapKeyboardBuilder =
-		(entryPoint: IActionApplicationMapKeyboard)
-			=> IActionApplicationMapKeyboard['keyboard'];
-
 	export interface IActionApplicationMap {
 		[key: string]: IActionApplicationMapNode | null
 	}
 
-	export type IInvertedApplicationActionMap<T = TDEFAULT_ACTIONS> = {
+	export type IInvertedApplicationActionMap<T = TDEFAULT_ACTIONS> = {	// @ts-ignore
 		[Key in keyof T as `INVERTED_${Key}`]: IActionApplicationMapNode | null;
 	}
 }

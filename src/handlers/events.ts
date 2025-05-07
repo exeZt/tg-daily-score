@@ -1,6 +1,3 @@
-
-import {ShemeBase} from "../data/query_schemes";
-import SqliteApplicationHandler from "../data/sqlite";
 import TEvents from "../types/events.t";
 import DefaultDataHandler from "../data/default";
 import {goToMainMenu} from "./response";
@@ -20,28 +17,28 @@ export default class Events implements TEvents.IEvents {
 			new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_CDOC(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+
 		},
 		async INVERTED_COMBO(args: TEvents.IResolvedEventParams): Promise<void> {
 			new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_EQI_INSTALL(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+
 		},
 		async INVERTED_EQI_SERVICE(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_EQ_3_INSTALL(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_EQ_INSTALL(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_EQ_SERVICE(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_EQ_UNINSTALL(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_FNS(args: TEvents.IResolvedEventParams): Promise<void> {
 			new DefaultDataHandler().removeDataBaseRecord(args);
@@ -56,16 +53,16 @@ export default class Events implements TEvents.IEvents {
 			new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_RKO(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_SELFIE_CC(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_SELFIE_DC(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_SELFIE_DC_N2B(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_TRADEACQ(args: TEvents.IResolvedEventParams): Promise<void> {
 			new DefaultDataHandler().removeDataBaseRecord(args);
@@ -74,7 +71,7 @@ export default class Events implements TEvents.IEvents {
 			new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async INVERTED_ZPC(args: TEvents.IResolvedEventParams): Promise<void> {
-			new DefaultDataHandler().removeDataBaseRecord(args);
+			// new DefaultDataHandler().removeDataBaseRecord(args);
 		},
 		async BC(args: TEvents.IResolvedEventParams): Promise<void> {
 			new DefaultDataHandler().addDataBaseRecord(args);

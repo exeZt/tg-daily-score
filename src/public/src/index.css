@@ -27,18 +27,18 @@ body, #root{
 
 .application {
   width: calc(100%);
-  height: 100%;
+  height: calc(100%);
   background: #ffffff;
   display: flex;
   flex-direction: column;
 }
 main{
   width: 100vw;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 150px);
   background: #242424;
-  overflow-y: auto;
+  /*overflow-y: auto;*/
 }
-section {
+.workspace-section {
   height: 100%;
 }
 header h1{
@@ -62,4 +62,20 @@ header select {
   border: none;
   outline: none;
   background: #02b2e8;
+}
+.top-panel{
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+.top-panel__select__date,
+.top-panel__select__user{
+  margin-left: 5px;
+  width: 150px;
+  height: 25px;
+  outline: none;
+  background: transparent;
+  border: 1px solid #0a7295;
+  border-radius: 3px;
 }

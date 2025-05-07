@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 
-export namespace TTelegramHandler {
+namespace TTelegram {
 	export interface ITelegramHandler {
 		run: () => void;
 	}
@@ -24,3 +24,4 @@ export namespace TTelegramHandler {
 		events: ITelegramCustomEvents<Y>;
 	}
 }
+export default TTelegram;

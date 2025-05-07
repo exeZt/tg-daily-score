@@ -1,23 +1,24 @@
 import TelegramBot, {InlineKeyboardMarkup} from "node-telegram-bot-api";
-import keyboardBuilder, {MainApplicationKeyboard} from "../assets/keyboards";
+import {MainApplicationKeyboard} from "../assets/keyboards";
+import Keyboards from "../lib/modules/keyboards";
 import Events from "./events";
 import {DEFAULT_ACTION_MAP, DEFAULT_INVERTED_ACTION_MAP} from "../assets/actions";
 import TActions from "../types/actions.t";
 import TEvents from "../types/events.t";
+import IActionApplicationMapNode = TActions.IActionApplicationMapNode;
 
 export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQuery, user: TelegramBot.User, client: TelegramBot) {
 	// TODO: normalize types
 	const responseFounder = (current?: TActions.IActionApplicationMapNode, prev?: TActions.IActionApplicationMapNode) => {
 		let data: TActions.IActionApplicationMapNode | (TActions.IActionApplicationMap & TActions.IInvertedApplicationActionMap<TActions.TDEFAULT_ACTIONS>) = current ?? Object.assign(DEFAULT_ACTION_MAP, DEFAULT_INVERTED_ACTION_MAP);
-		Object.entries(data).forEach(([key, mapNode]) => {
+		Object.entries(data).forEach(([key, mapNode]: [string, IActionApplicationMapNode]) => {
 			if (mapNode.code.toString() === callbackResponse.data!) {
 				if (mapNode?.next) {
-					keyboardBuilder(mapNode.next!, {
+					Keyboards.keyboardBuilder(mapNode.next!, {
 						buttons: {
 							add_exit: true
 						}
-					}, (keyboard) => {
-						console.log(keyboard);
+					}, (keyboard: InlineKeyboardMarkup) => {
 						client.sendMessage(user.id, `Crosses:`, {
 							reply_markup: keyboard
 						})
@@ -26,8 +27,8 @@ export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQu
 						.catch((err) => console.log(err));
 					onResolvedEvent({
 						callbackQuery: callbackResponse,
-						client: client,
-						event: key as keyof TActions.TDEFAULT_ACTIONS,
+						client: client, //@ts-ignore
+						event: key,
 						mapNode: mapNode,
 						oldNode: prev,
 						user: user
@@ -36,8 +37,8 @@ export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQu
 				} else {
 					onResolvedEvent({
 						callbackQuery: callbackResponse,
-						client: client,
-						event: key as keyof TActions.TDEFAULT_ACTIONS,
+						client: client,//@ts-ignore
+						event: key,
 						mapNode: mapNode,
 						oldNode: prev,
 						user: user
@@ -46,6 +47,7 @@ export default function ResponseHandler(callbackResponse: TelegramBot.CallbackQu
 				}
 			}
 			if (mapNode?.next) {
+				// @ts-ignore
 				responseFounder(mapNode?.next!, mapNode);
 			}
 		})
@@ -59,7 +61,7 @@ export const goToMainMenu = async (args: TEvents.IResolvedEventParams): Promise<
 	});
 }
 
-export const onResolvedEvent: TEvents.IResolvedEvent = async (params: TEvents.IResolvedEventParams, callback?: (...args: any) => void): Promise<void> => {
+export const onResolvedEvent: TEvents.IResolvedEvent = async (params: TEvents.IResolvedEventParams): Promise<void> => {
 	let event = params.event;
 	// @ts-ignore
 	await new Events().ResolvedEventHandler[event].call(this, params);

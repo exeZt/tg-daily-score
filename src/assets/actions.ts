@@ -13,12 +13,10 @@ export const DEFAULT_ACTIONS: TActions.TDEFAULT_ACTIONS = {
 	SELFIE_DC: 0x00000A,
 	SELFIE_CC: 0x00000B,
 	SELFIE_DC_N2B: 0x00000C,
-	// crosses
 	COMBO : 0x0000A1,
 	INVEST : 0x0000A2,
 	CASHBACK: 0x0000A3,
 	ZHKU: 0x0000A4,
-	// crosses rko
 	FNS: 0x0000B1,
 	TRADEACQ: 0x0000B2,
 	IACQ: 0x0000B3,
@@ -32,20 +30,25 @@ export const DEFAULT_ACTION_MAP: TActions.IActionApplicationMap = {
 	ZPC : {
 		code: 0x000001,
 		data: 280,
+		name: 'Зпк',
 		next: {
 			COMBO : {
+				name: 'Комбо',
 				code: 0x0000A1,
 				data: 380,
 			},
 			INVEST : {
+				name: 'БС',
 				code: 0x0000A2,
 				data: 380
 			},
 			CASHBACK: {
+				name: 'Кеш',
 				code: 0x0000A3,
 				data: 30,
 			},
 			ZHKU: {
+				name: 'ЖКХ',
 				code: 0x0000A4,
 				data: 30
 			},
@@ -53,45 +56,82 @@ export const DEFAULT_ACTION_MAP: TActions.IActionApplicationMap = {
 	},
 	RKO : {
 		code: 0x000002,
-		data: 770
+		data: 770,
+		name: 'РКО',
+		next: {
+			FNS: {
+				name: 'Фнс',
+				code: 0x0000B1
+			},
+			TRADEACQ:  {
+				name: 'Кросс ТЭ',
+				code: 0x0000B2
+			},
+			IACQ:  {
+				name: 'Кросс ИЭ',
+				code: 0x0000B3
+			},
+			RISK:  {
+				name: 'Риски',
+				code: 0x0000B4
+			},
+			BC:  {
+				name: 'БК',
+				code: 0x0000B5
+			},
+			CDC:  {
+				name: 'Кросс ДК',
+				code: 0x0000B6
+			},
+		}
 	},
 	CDOC: {
+		name: 'КММБ',
 		code: 0x000003,
 		data: 510
 	},
 	EQ_INSTALL: {
+		name: 'Установка ТЭ',
 		code: 0x000004,
 		data: 510
 	},
 	EQ_SERVICE: {
+		name: 'Сервис ТЭ',
 		code: 0x000005,
 		data: 510
 	},
 	EQ_UNINSTALL: {
+		name: 'Демонтаж ТЭ',
 		code: 0x000006,
 		data: 280
 	},
 	EQI_INSTALL: {
+		name: 'Установка ИКР',
 		code: 0x000007,
 		data: 770
 	},
 	EQI_SERVICE: {
+		name: 'Сервис ИКР',
 		code: 0x000008,
 		data: 770
 	},
 	EQ_3_INSTALL: {
+		name: 'Установка Касса 3в1',
 		code: 0x000009,
 		data: 770
 	},
 	SELFIE_DC: {
+		name: 'Селфи ДК',
 		code: 0x000010,
 		data: 280
 	},
 	SELFIE_CC: {
+		name: 'Селфи КК',
 		code: 0x000011,
-		data: 380
+		data: 510
 	},
 	SELFIE_DC_N2B: {
+		name: 'Селфи ДК n2b',
 		code: 0x000012,
 		data: 350
 	},
@@ -102,13 +142,13 @@ export const DEFAULT_INVERTED_ACTION_MAP: TActions.IInvertedApplicationActionMap
 		code: ~0xFFAAFF
 	},
 	INVERTED_BC: {
-		code: 0x000001
+		code: ~0x0000B5
 	},
 	INVERTED_CASHBACK: {
-		code: 0x0000A3
+		code: ~0x0000A3
 	},
 	INVERTED_CDC: {
-		code: 0x000001
+		code: ~0x0000B6
 	},
 	INVERTED_CDOC: {
 		code: ~0x000003

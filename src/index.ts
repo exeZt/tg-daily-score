@@ -1,37 +1,31 @@
 "use strict";
 
 import dotenv from 'dotenv';
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
 import path from "node:path";
 import TelegramHandler from "./handlers/telegram";
 import AppServer from "./srv/app_server";
+import router from "./api/common";
 
 dotenv.config();
 
 if (!process.env.TELEGRAM_TOKEN)
 	throw new Error("Telegram token doesn't exist");
 
-const app = express();
 const tg = new TelegramHandler();
-
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cors({origin: "*"}));
-app.use(express.static(path.join(__dirname, "public")));
+const app = new AppServer({
+	env: process.env
+}).application;
+const app_port = process.env.APP_PORT ?? 3000;
 
 tg.run();
 
+app.use('/api/', router);
+
 app.get('/', (req,res): void => {
 	res.status(200)
-		.sendFile(path.resolve(process.cwd(), `/public/index.html`));
+		.sendFile(path.resolve(process.cwd(), `public/index.html`));
 });
 
-app.listen(process.env.APP_PORT ?? 3000, (error: Error | undefined): void => {
-	console.log(`Listening on ${process.env.APP_PORT}`);
-	if (error)
-		console.error(error);
+app.listen(app_port, () => {
+	console.log(`Listening on ${app_port}`);
 });

@@ -1,64 +1,55 @@
 import * as React from "react";
 import {useEffect} from "react";
-import AppTabs from "./tabs.tsx";
-import { DataGrid,GridColDef } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
+import TopPanel from "./top-panel.tsx";
+import Api from "../api/api.ts";
+import {TDEFAULT_ACTIONS} from "../types/ui.ts";
+import {useSearchParams} from "react-router-dom";
 
 export default function AppWorkspace(): React.JSX.Element {
-	const columns: GridColDef<(typeof rows)[number]>[] = [
-		{ field: 'id', headerName: 'ID', width: 90 },
-		{
-			field: 'firstName',
-			headerName: 'First name',
-			width: 150,
-			editable: true,
-		},
-		{
-			field: 'lastName',
-			headerName: 'Last name',
-			width: 150,
-			editable: true,
-		},
-		{
-			field: 'age',
-			headerName: 'Age',
-			type: 'number',
-			width: 110,
-			editable: true,
-		},
-		{
-			field: 'fullName',
-			headerName: 'Full name',
-			description: 'This column has a value getter and is not sortable.',
-			sortable: false,
-			width: 160,
-			valueGetter: (_value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-		},
-	];
-
-	const rows = [
-		{ id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-		{ id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-		{ id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-		{ id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-		{ id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-		{ id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-		{ id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-		{ id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-		{ id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-	];
+	// const [data, setData] = React.useState<any[]>([]);
+	const [searchParams, _setSearchParams] = useSearchParams();
+	const [_rows, setRows] = React.useState<TDEFAULT_ACTIONS[] | []>([]);
+	const [_cols, setCols] = React.useState<TDEFAULT_ACTIONS[] | []>([]);
 
 	useEffect(() => {
-
-	}, [])
+		let cols: { field: string; headerName: string; width?: number; editable: boolean }[];
+		let table: string | null = searchParams.get('table');
+		if (table !== null) {
+			Api.getSummary(table, (v: TDEFAULT_ACTIONS[]) => {
+				if (v !== null){
+					let rows: TDEFAULT_ACTIONS[] = v.map((val, index) => {
+						return val = Object.defineProperty(val, 'id', { value: index });
+					});
+					let template = rows[0];
+					cols = Object.keys(template).map((v) => {
+						return {
+							field: v,
+							headerName: v,
+							// width: 50,
+							editable: true
+						}
+					})
+					setRows(rows);//@ts-ignore
+					setCols(cols);
+					console.log(rows);
+				} else {
+					setRows([])
+					setCols([])
+				}
+			})
+		}
+	}, [searchParams]);
 
 	return (
 		<main>
-			<AppTabs data={['1','2','3']} />
-			<section>
+			<TopPanel />
+			{/*<AppTabs data={['1','2','3']} />*/}
+			<section className='workspace-section'>
 				<DataGrid
-					style={{ height: '100%' }}
-					columns={columns}
-					rows={rows}
+					style={{ height: '100%' }} //@ts-ignore
+					columns={_cols}
+					rows={_rows}
 					initialState={{
 						pagination: {
 							paginationModel: {
